@@ -59,7 +59,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
                 <span className="font-bold text-white text-lg tracking-tight">Quantum RDF</span>
             </div>
 
-            {/* Navigation */}
             <nav className="flex-1 p-4 space-y-2 mt-2">
                 <NavItem
                     icon={<LayoutDashboard size={20} />}
@@ -79,6 +78,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
                     isActive={activeTab === 'settings'}
                     onClick={() => setActiveTab('settings')}
                 />
+                {/* Linking to the new React Router flow */}
+                <a href="/sce" className="block mt-4 pt-4 border-t border-slate-800">
+                    <NavItem
+                        icon={<Cpu size={20} />}
+                        label="Social Cohesion (SCE)"
+                        isActive={window.location.pathname.startsWith('/sce')}
+                        onClick={() => { }}
+                    />
+                </a>
             </nav>
 
             {/* Status Footer */}

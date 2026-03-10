@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Graph } from './core/graph/Graph';
 import type { RDFValue } from './core/graph/Graph';
 import { RDFProblem, SRDFVariant } from './core/graph/RDF';
 import { ComplexGraphGenerator } from './core/graph/ComplexGraphGenerator';
+import SCERoutes from './sce/index';
 
 // Layout Imports
 import { Sidebar } from './components/Layout/Sidebar';
@@ -272,54 +274,60 @@ function App() {
     );
   };
 
+  // ... everything stays the same until return statement
   return (
-    <div className="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
+    <Routes>
+      <Route path="/sce/*" element={<SCERoutes />} />
+      <Route path="*" element={
+        <div className="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
 
-      {/* 1. Sidebar */}
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+          {/* 1. Sidebar */}
+          <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* 2. Main Area */}
-      <main className="flex-1 flex flex-col h-full ml-64 relative z-0">
-        <Header title={activeTab === 'dashboard' ? 'Solver Dashboard' : (activeTab.charAt(0).toUpperCase() + activeTab.slice(1))} />
+          {/* 2. Main Area */}
+          <main className="flex-1 flex flex-col h-full ml-64 relative z-0">
+            <Header title={activeTab === 'dashboard' ? 'Solver Dashboard' : (activeTab.charAt(0).toUpperCase() + activeTab.slice(1))} />
 
-        {/* Scrollable Workspace */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-6">
+            {/* Scrollable Workspace */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-6">
 
-          {/* VIEW ROUTER */}
-          {activeTab === 'dashboard' && (
-            <DashboardView
-              graph={graph}
-              assignment={assignment}
-              setAssignment={setAssignment}
-              mode={mode}
-              setMode={setMode}
-              isSigned={isSigned}
-              setIsSigned={setIsSigned}
-              variant={variant}
-              setVariant={setVariant}
-              onGraphChange={handleGraphChange}
-              onClear={handleClear}
-              onLoadTemplate={handleLoadTemplate}
-              onSolutionFound={handleSolutionFound}
-              problem={problem}
-              weight={weight}
-              violations={violations}
-              attacks={attacks}
-              isValid={isValid}
-            />
-          )}
+              {/* VIEW ROUTER */}
+              {activeTab === 'dashboard' && (
+                <DashboardView
+                  graph={graph}
+                  assignment={assignment}
+                  setAssignment={setAssignment}
+                  mode={mode}
+                  setMode={setMode}
+                  isSigned={isSigned}
+                  setIsSigned={setIsSigned}
+                  variant={variant}
+                  setVariant={setVariant}
+                  onGraphChange={handleGraphChange}
+                  onClear={handleClear}
+                  onLoadTemplate={handleLoadTemplate}
+                  onSolutionFound={handleSolutionFound}
+                  problem={problem}
+                  weight={weight}
+                  violations={violations}
+                  attacks={attacks}
+                  isValid={isValid}
+                />
+              )}
 
-          {activeTab === 'history' && (
-            <HistoryView history={history} onClear={clearHistory} />
-          )}
+              {activeTab === 'history' && (
+                <HistoryView history={history} onClear={clearHistory} />
+              )}
 
-          {activeTab === 'settings' && (
-            <SettingsView />
-          )}
+              {activeTab === 'settings' && (
+                <SettingsView />
+              )}
 
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      } />
+    </Routes>
   );
 }
 

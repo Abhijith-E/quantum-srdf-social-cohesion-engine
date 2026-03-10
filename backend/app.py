@@ -3,8 +3,10 @@ import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from qsolver import run_vqe_on_ibm, check_connection
+from sce.sce_routes import sce_bp
 
 app = Flask(__name__)
+app.register_blueprint(sce_bp, url_prefix='/api/sce')
 CORS(app, resources={r"/*": {"origins": "*"}}) # Reverting to * for simplicity since we don't actually need credentials for this API
 
 @app.route('/health', methods=['GET'])
