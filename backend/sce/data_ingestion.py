@@ -122,13 +122,38 @@ def generate_demo_network(scenario: str) -> SocialNetwork:
             
         return SocialNetwork(id=scenario, name="Classroom Conflict", description="30 students, 3 cliques, 40% conflict", context="school", nodes=nodes, edges=edges, created_at=datetime.datetime.now().isoformat())
     elif scenario == "workplace_tension":
+        G = nx.erdos_renyi_graph(50, 0.15, seed=42)
+        import random
+        random.seed(42)
         nodes = [SocialNode(id=f"W{i}", label=f"Employee {i}", role="employee", department="dept") for i in range(50)]
-        return SocialNetwork(id=scenario, name="Workplace Tension", description="50 employees", context="workplace", nodes=nodes, edges=[], created_at=datetime.datetime.now().isoformat())
+        edges = []
+        for u, v in G.edges():
+            sign = -1 if random.random() < 0.3 else 1
+            edges.append(SocialEdge(source=f"W{u}", target=f"W{v}", sign=sign, weight=1.0, edge_type="colleague"))
+        return SocialNetwork(id=scenario, name="Workplace Tension", description="50 employees, ~300 connections", context="workplace", nodes=nodes, edges=edges, created_at=datetime.datetime.now().isoformat())
+        
     elif scenario == "campus_polarization":
+        G = nx.stochastic_block_model([50, 50], [[0.15, 0.02], [0.02, 0.15]], seed=42)
+        import random
+        random.seed(42)
         nodes = [SocialNode(id=f"C{i}", label=f"Student {i}", role="student", department="campus") for i in range(100)]
-        return SocialNetwork(id=scenario, name="Campus Polarization", description="100 students", context="school", nodes=nodes, edges=[], created_at=datetime.datetime.now().isoformat())
+        edges = []
+        for u, v in G.edges():
+            # Inter-group edges are largely negative, intra-group largely positive
+            is_cross = (u < 50 and v >= 50) or (u >= 50 and v < 50)
+            sign = -1 if is_cross else (1 if random.random() < 0.9 else -1)
+            edges.append(SocialEdge(source=f"C{u}", target=f"C{v}", sign=sign, weight=1.0, edge_type="peer"))
+        return SocialNetwork(id=scenario, name="Campus Polarization", description="100 students, Highly polarized twin communities", context="school", nodes=nodes, edges=edges, created_at=datetime.datetime.now().isoformat())
+        
     elif scenario == "online_community":
+        G = nx.barabasi_albert_graph(200, 2, seed=42)
+        import random
+        random.seed(42)
         nodes = [SocialNode(id=f"O{i}", label=f"User {i}", role="user", department="forum") for i in range(200)]
-        return SocialNetwork(id=scenario, name="Online Community", description="200 nodes", context="online", nodes=nodes, edges=[], created_at=datetime.datetime.now().isoformat())
+        edges = []
+        for u, v in G.edges():
+            sign = -1 if random.random() < 0.25 else 1
+            edges.append(SocialEdge(source=f"O{u}", target=f"O{v}", sign=sign, weight=1.0, edge_type="interaction"))
+        return SocialNetwork(id=scenario, name="Online Community", description="200 users, Scale-Free network architecture", context="online", nodes=nodes, edges=edges, created_at=datetime.datetime.now().isoformat())
         
     return SocialNetwork(id=scenario, name=scenario, description="", context="general", nodes=[], edges=[], created_at="")

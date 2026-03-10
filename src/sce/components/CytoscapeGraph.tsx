@@ -112,7 +112,7 @@ const CytoscapeGraph = ({ network, solverResult }: { network: any, solverResult:
         };
     }, [network, solverResult]);
 
-    return <div ref={containerRef} style={{ width: '100%', height: '500px', backgroundColor: '#f8fafc' }} />;
+    return <div ref={containerRef} style={{ width: '100%', height: '100vh', backgroundColor: '#f8fafc' }} />;
 };
 
 export default CytoscapeGraph;
